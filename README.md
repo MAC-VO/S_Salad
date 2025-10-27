@@ -1,4 +1,4 @@
-![DINOv2 SALAD](assets/dino_salad_title.png)
+I k![DINOv2 SALAD](assets/dino_salad_title.png)
 # Optimal Transport Aggregation for Visual Place Recognition
 Sergio Izquierdo, Javier Civera
 
@@ -44,7 +44,35 @@ After training, logs and checkpoints should be on the `logs` dir.
 
 ## Evaluation
 
-You can download a pretrained DINOv2 SALAD model from [here](https://drive.google.com/file/d/1u83Dmqmm1-uikOPr58IIhfIzDYwFxCy1/view?usp=sharing). For evaluating run:
+You can download a pretrained DINOv2 SALAD model from here:
+<table>
+ <thead>
+   <tr>
+    <th>Model Name</th>
+    <th>Descriptor size</th>
+    <th>Download link</th>
+   </tr>
+ </thead>
+ <tbody>
+   <tr>
+     <td>dino_salad</td>
+     <td>8192+256</td>
+     <td> <a href="https://drive.google.com/file/d/1u83Dmqmm1-uikOPr58IIhfIzDYwFxCy1/view?usp=sharing">download</a></td>
+   </tr>
+   <tr>
+     <td>dino_salad_512_32</td>
+     <td>512 + 32</td>
+     <td> <a href="https://drive.google.com/file/d/18SljgYj0mErBvuMoVYSJpI9BIQ7aDWDB/view?usp=sharing">download</a></td>
+   </tr>
+   <tr>
+     <td>dino_salad_2048_64</td>
+     <td>2048+64</td>
+     <td> <a href="https://drive.google.com/file/d/1g0T5kCHfV6T-V1GWA1BlVGZb2KWzGIty/view?usp=sharing">download</a></td>
+   </tr>
+ </tbody>
+</table>
+
+For evaluating run:
 
 ```bash
 python3 eval.py --ckpt_path 'weights/dino_salad.ckpt' --image_size 322 322 --batch_size 256 --val_datasets MSLS Nordland
