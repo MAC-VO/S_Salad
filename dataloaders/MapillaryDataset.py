@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import numpy as np
 from PIL import Image
 from torch.utils.data import Dataset
@@ -9,15 +10,17 @@ from torch.utils.data import Dataset
 # I hardcoded the groundtruth for image to image evaluation, otherwise it would take ages to run the groundtruth script at each epoch.
 DATASET_ROOT = '../data/mapillary/'
 
-path_obj = Path(DATASET_ROOT)
-if not path_obj.exists():
-    raise Exception('Please make sure the path to mapillary_sls dataset is correct')
-
-if not path_obj.joinpath('train_val'):
-    raise Exception(f'Please make sure the directory train_val from mapillary_sls dataset is situated in the directory {DATASET_ROOT}')
-
 class MSLS(Dataset):
     def __init__(self, input_transform = None):
+        path_obj = Path(DATASET_ROOT)
+        if not path_obj.exists():
+            raise FileNotFoundError(
+                f'Please make sure the path to mapillary_sls dataset is correct: {DATASET_ROOT}'
+            )
+        if not path_obj.joinpath('train_val').exists():
+            raise FileNotFoundError(
+                f'Please make sure the directory train_val from mapillary_sls dataset is situated in {DATASET_ROOT}'
+            )
         
         self.input_transform = input_transform
         

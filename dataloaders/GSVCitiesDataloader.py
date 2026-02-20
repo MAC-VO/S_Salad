@@ -2,9 +2,8 @@ import pytorch_lightning as pl
 from torch.utils.data.dataloader import DataLoader
 from torchvision import transforms as T
 
-from dataloaders.GSVCitiesDataset import GSVCitiesDataset
+from dataloaders.GSVCitiesDataset import BASE_PATH, GSVCitiesDataset
 from . import PittsburgDataset
-from . import MapillaryDataset
 
 from prettytable import PrettyTable
 
@@ -51,10 +50,11 @@ class GSVCitiesDataModule(pl.LightningDataModule):
                  num_workers=4,
                  show_data_stats=True,
                  cities=TRAIN_CITIES,
+                 base_path=BASE_PATH,
                  mean_std=IMAGENET_MEAN_STD,
                  batch_sampler=None,
                  random_sample_from_each_place=True,
-                 val_set_names=['pitts30k_val', 'msls_val']
+                 val_set_names=['pitts30k_val', 'pitts30k_test']
                  ):
         super().__init__()
         self.batch_size = batch_size
@@ -66,6 +66,7 @@ class GSVCitiesDataModule(pl.LightningDataModule):
         self.batch_sampler = batch_sampler
         self.show_data_stats = show_data_stats
         self.cities = cities
+        self.base_path = base_path
         self.mean_dataset = mean_std['mean']
         self.std_dataset = mean_std['std']
         self.random_sample_from_each_place = random_sample_from_each_place
@@ -113,6 +114,7 @@ class GSVCitiesDataModule(pl.LightningDataModule):
                     self.val_datasets.append(PittsburgDataset.get_whole_val_set(
                         input_transform=self.valid_transform))
                 elif valid_set_name.lower() == 'msls_val':
+                    from . import MapillaryDataset
                     self.val_datasets.append(MapillaryDataset.MSLS(
                         input_transform=self.valid_transform))
                 else:
@@ -128,7 +130,8 @@ class GSVCitiesDataModule(pl.LightningDataModule):
             img_per_place=self.img_per_place,
             min_img_per_place=self.min_img_per_place,
             random_sample_from_each_place=self.random_sample_from_each_place,
-            transform=self.train_transform)
+            transform=self.train_transform,
+            base_path=self.base_path)
 
     def train_dataloader(self):
         self.reload()

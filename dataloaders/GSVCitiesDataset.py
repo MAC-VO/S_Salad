@@ -16,10 +16,6 @@ default_transform = T.Compose([
 # NOTE: Hard coded path to dataset folder 
 BASE_PATH = '../data/GSVCities/'
 
-if not Path(BASE_PATH).exists():
-    raise FileNotFoundError(
-        'BASE_PATH is hardcoded, please adjust to point to gsv_cities')
-
 class GSVCitiesDataset(Dataset):
     def __init__(self,
                  cities=['London', 'Boston'],
@@ -30,7 +26,17 @@ class GSVCitiesDataset(Dataset):
                  base_path=BASE_PATH
                  ):
         super(GSVCitiesDataset, self).__init__()
-        self.base_path = base_path
+        self.base_path = Path(base_path).expanduser()
+        self.dataframe_dir = self.base_path / 'Dataframes'
+        self.images_dir = self.base_path / 'Images'
+        if not self.dataframe_dir.exists():
+            raise FileNotFoundError(
+                f'GSVCities Dataframes folder does not exist: {self.dataframe_dir}'
+            )
+        if not self.images_dir.exists():
+            raise FileNotFoundError(
+                f'GSVCities Images folder does not exist: {self.images_dir}'
+            )
         self.cities = cities
 
         assert img_per_place <= min_img_per_place, \
@@ -48,7 +54,7 @@ class GSVCitiesDataset(Dataset):
         self.total_nb_images = len(self.dataframe)
         
     def __getdataframes(self):
-        ''' 
+        '''
             Return one dataframe containing
             all info about the images from all cities
 
@@ -57,14 +63,13 @@ class GSVCitiesDataset(Dataset):
             for each city in self.cities
         '''
         # read the first city dataframe
-        df = pd.read_csv(self.base_path+'Dataframes/'+f'{self.cities[0]}.csv')
+        df = pd.read_csv(self.dataframe_dir / f'{self.cities[0]}.csv')
         df = df.sample(frac=1)  # shuffle the city dataframe
         
 
         # append other cities one by one
         for i in range(1, len(self.cities)):
-            tmp_df = pd.read_csv(
-                self.base_path+'Dataframes/'+f'{self.cities[i]}.csv')
+            tmp_df = pd.read_csv(self.dataframe_dir / f'{self.cities[i]}.csv')
 
             # Now we add a prefix to place_id, so that we
             # don't confuse, say, place number 13 of NewYork
@@ -102,8 +107,7 @@ class GSVCitiesDataset(Dataset):
         imgs = []
         for i, row in place.iterrows():
             img_name = self.get_img_name(row)
-            img_path = self.base_path + 'Images/' + \
-                row['city_id'] + '/' + img_name
+            img_path = self.images_dir / row['city_id'] / img_name
             img = self.image_loader(img_path)
 
             if self.transform is not None:

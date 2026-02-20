@@ -42,6 +42,21 @@ python3 main.py
 
 After training, logs and checkpoints should be on the `logs` dir.
 
+### RoMaV2 DINOv3 + SALAD (frozen backbone)
+
+To train SALAD on top of a frozen RoMaV2 DINOv3 backbone, provide a local
+RoMaV2 checkpoint (must contain descriptor keys prefixed by `f.`) and the
+GSV-Cities root folder:
+
+```bash
+python3 main_roma_dinov3.py \
+  --romav2-ckpt-path /path/to/romav2.pt \
+  --gsv-root /path/to/GSVCities
+```
+
+By default `--num-trainable-blocks 0` keeps RoMaV2 DINOv3 fully frozen.
+Increase it to finetune the last N transformer blocks.
+
 ## Evaluation
 
 You can download a pretrained DINOv2 SALAD model from here:

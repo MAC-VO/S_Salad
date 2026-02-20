@@ -1,4 +1,3 @@
-import numpy as np
 from models import aggregators
 from models import backbones
 
@@ -21,6 +20,12 @@ def get_backbone(
 
     elif 'dinov2' in backbone_arch.lower():
         return backbones.DINOv2(model_name=backbone_arch, **backbone_config)
+
+    elif backbone_arch.lower() == 'romav2_dinov3_vitl16':
+        assert 'romav2_ckpt_path' in backbone_config
+        return backbones.RoMaDINOv3(model_name=backbone_arch, **backbone_config)
+
+    raise ValueError(f'Unknown backbone architecture: {backbone_arch}')
 
 
 def get_aggregator(agg_arch='ConvAP', agg_config={}):

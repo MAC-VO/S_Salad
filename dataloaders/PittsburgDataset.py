@@ -9,7 +9,7 @@ import torch.utils.data as data
 from PIL import Image, UnidentifiedImageError
 from sklearn.neighbors import NearestNeighbors
 
-root_dir = '../data/Pittsburgh/'
+root_dir = '/ocean/projects/cis220039p/leolrg/data/pitts30k'
 
 if not exists(root_dir):
     raise FileNotFoundError(
